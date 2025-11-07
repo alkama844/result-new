@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: bteb-result-checker
+    env: node
+    region: singapore
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /status
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+    autoDeploy: true

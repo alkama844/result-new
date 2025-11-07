@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Result - BTEB Result Check | Magura Polytechnic Institute</title>
+  <link rel="icon" type="image/x-icon" href="weblogo.png">
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Check BTEB diploma result, Magura Polytechnic Institute results, Bangladesh Technical Education Board exam results. Fast and accurate result checking system.">
+  <meta name="keywords" content="bteb result check, btebresultcheek, btebresult, polytechnic result, diploma result check, Magura Polytechnic Institute, Bangladesh Technical Board Result, btebresultzone, bteb results published, nafijrahaman, nafij.me, nafijrahaman.me, nafijpro, nafij, Magura Poly, btebresultcheek.me, btebresultcheek.tech, btebresultcheek.dev, btebresultcheek.com">
+  <meta name="author" content="Nafij Rahaman">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="BTEB Result Check - Magura Polytechnic Institute">
+  <meta property="og:description" content="Check your diploma examination results fast and accurate">
+  <meta property="og:type" content="website">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px 10px;
+    }
+
+    .student-container {
+      padding: 25px;
+      max-width: 500px;
+      margin: 60px auto 30px;
+      text-align: center;
+      border-radius: 15px;
+      border: 3px solid gray;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .pass {
+      border-color: #28a745;
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    }
+
+    .fail {
+      border-color: #dc3545;
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    }
+
+    .dropout {
+      border-color: #dc3545;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+    }
+
+    .dropout-message {
+      background: #dc3545;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    .motivation-text {
+      margin-top: 15px;
+      padding: 15px;
+      background: #fff;
+      border-left: 4px solid #3498db;
+      border-radius: 5px;
+      font-size: 15px;
+      color: #2c3e50;
+      text-align: left;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+      font-size: 24px;
+    }
+
+    #gpaList {
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 10px 0;
+      list-style-type: none;
+      text-align: left;
+    }
+
+    #gpaList li {
+      padding: 10px 12px;
+      margin: 8px 0;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border-left: 4px solid #3498db;
+      font-size: 14px;
+    }
+
+    #referredSubjects {
+      text-align: left;
+      padding: 12px;
+      margin-top: 15px;
+      background: #fff3cd;
+      border-radius: 8px;
+      border: 1px solid #ffc107;
+    }
+
+    .student-status {
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+
+    #cgpa {
+      font-weight: bold;
+      margin: 15px 0;
+      font-size: 22px;
+      color: #2c3e50;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0,0,0,.1);
+      border-radius: 50%;
+      border-top-color: #3498db;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    button {
+      padding: 14px 30px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #checkAnotherBtn {
+      background-color: #27ae60;
+      margin-top: 15px;
+    }
+
+    #checkAnotherBtn:hover {
+      background-color: #229954;
+    }
+
+    #errorMessage {
+      color: #e74c3c;
+      font-weight: bold;
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .ref-subject {
+      display: block;
+      background: #fff;
+      padding: 10px 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border-left: 4px solid #ff6b6b;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .subject-code {
+      font-weight: bold;
+      color: #dc3545;
+      margin-right: 8px;
+      display: inline-block;
+      min-width: 60px;
+    }
+
+    .subject-name {
+      color: #2c3e50;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .student-container {
+        margin: 40px auto 20px;
+        padding: 20px 15px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      #cgpa {
+        font-size: 18px;
+      }
+
+      .student-status {
+        font-size: 18px;
+      }
+
+      input[type="text"] {
+        font-size: 14px;
+        padding: 12px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 12px 20px;
+      }
+
+      .dropout-message {
+        font-size: 16px;
+        padding: 15px;
+      }
+
+      .motivation-text {
+        font-size: 14px;
+      }
+
+      #gpaList li,
+      .ref-subject {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .student-container {
+        padding: 15px 10px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      .subject-code {
+        display: block;
+        margin-bottom: 5px;
+      }
+    }
+
+    /* Loading indicator */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="student-container" id="resultBox">
+    <h2>📊 Diploma Result Checker</h2>
+    
+    <div id="searchSection">
+      <input type="text" id="rollNumber" placeholder="Enter Roll Number (e.g., 123456)">
+      <button id="checkResult">🔍 Check Result</button>
+    </div>
+
+    <div id="resultDisplay" class="hidden">
+      <div class="student-status" id="studentStatus"></div>
+      <p><strong>Roll Number:</strong> <span id="studentRoll"></span></p>
+      <div id="cgpa"></div>
+      <ul id="gpaList"></ul>
+      <div id="referredSubjects" class="hidden">
+        <strong>📚 Referred Subjects:</strong>
+        <div id="referredText"></div>
+      </div>
+      <div id="dropoutMessage" class="hidden"></div>
+      <button id="checkAnotherBtn" class="hidden">🔄 Check Another Result</button>
+    </div>
+
+    <p id="errorMessage"></p>
+  </div>
+
+  <script type="module">
+    import { getResult } from './db-config.js';
+
+    // Subject code mapping (local fallback)
+    const SUBJECT_CODES = {
+      "21011": "Engineering Drawing",
+      "25711": "Bangla-I",
+      "25712": "English-I",
+      "25812": "Physical Education & Life Skills Development",
+      "25911": "Mathematics-I",
+      "25912": "Physics-I",
+      "26711": "Basic Electricity",
+      "26712": "Electrical Engineering Materials",
+      "25721": "Bangla-II",
+      "25722": "English-II",
+      "25921": "Mathematics-II",
+      "25922": "Physics-II",
+      "26721": "Electrical Circuits-I",
+      "26722": "Electrical Engineering Drawing",
+      "26811": "Basic Electronics",
+      "25931": "Mathematics-III",
+      "25913": "Chemistry",
+      "26611": "Computer Office Application",
+      "26731": "Electrical Circuits-II",
+      "26732": "Electrical Appliances",
+      "26833": "Industrial Electronics",
+      "25811": "Social Science",
+      "25841": "Accounting",
+      "26741": "Electrical Installation, Planning and Estimating",
+      "26742": "DC Machine",
+      "26743": "Electrical Engineering Project-I",
+      "26845": "Digital Electronics",
+      "27044": "Applied Mechanics",
+      "25851": "Principles of Marketing",
+      "25852": "Industrial Management",
+      "26751": "Generation of Electrical Power",
+      "26752": "Electrical & Electronic Measurements-I",
+      "26753": "Testing and Maintenance of Electrical Equipments",
+      "26754": "Electrical Engineering Project-II",
+      "26853": "Microprocessor & Microcontroller",
+      "26667": "Programming in C",
+      "26761": "AC Machine-I",
+      "26762": "Transmission and Distribution of Electrical Power-I",
+      "26763": "Electrical & Electronic Measurements-II",
+      "26842": "Communication Engineering",
+      "29041": "Environmental Studies",
+      "25831": "Business Communication",
+      "25853": "Innovation & Entrepreneurship",
+      "26771": "AC Machine-II",
+      "26772": "Transmission and Distribution of Electrical Power-II",
+      "26773": "Switch Gear and Protection",
+      "26774": "Electrical Engineering Project-III",
+      "26875": "Automation Engineering & PLC",
+      "26781": "Industrial Attachment & Project Presentation"
+    };
+
+    // Combined subject codes object
+    let allSubjectCodes = { ...SUBJECT_CODES };
+    let externalCodesLoaded = false;
+    const BOOKLIST_URL = 'https://raw.githubusercontent.com/alkama844/res/refs/heads/main/json/booklist.json';
+
+    // ✅ Load external codes and merge with local
+    async function loadExternalSubjectCodes() {
+      try {
+        const response = await fetch(BOOKLIST_URL);
+        if (response.ok) {
+          const externalCodes = await response.json();
+          allSubjectCodes = { ...SUBJECT_CODES, ...externalCodes };
+          externalCodesLoaded = true;
+          
+          // ✅ Save to localStorage for offline use
+          localStorage.setItem('subjectCodes', JSON.stringify(allSubjectCodes));
+          localStorage.setItem('subjectCodesTimestamp', Date.now().toString());
+          
+          console.log('✅ External subject codes loaded:', Object.keys(externalCodes).length, 'subjects');
+        }
+      } catch (error) {
+        console.log('⚠️ External subject codes not available, using local/cached');
+        
+        // Try to load from localStorage
+        const cached = localStorage.getItem('subjectCodes');
+        if (cached) {
+          allSubjectCodes = JSON.parse(cached);
+          console.log('✅ Loaded subject codes from cache');
+        }
+      }
+    }
+
+    // Load external codes on page load
+    await loadExternalSubjectCodes();
+
+    // ✅ Auto-refresh every 24 hours
+    const lastUpdate = localStorage.getItem('subjectCodesTimestamp');
+    if (!lastUpdate || (Date.now() - parseInt(lastUpdate)) > 24 * 60 * 60 * 1000) {
+      loadExternalSubjectCodes();
+    }
+
+    function getSubjectName(code) {
+      const name = allSubjectCodes[code];
+      if (!name && !externalCodesLoaded) {
+        // If not found and external not loaded, try to fetch again
+        loadExternalSubjectCodes().then(() => {
+          return allSubjectCodes[code] || null;
+        });
+      }
+      return name || null;
+    }
+
+    // Check maintenance mode
+    async function checkMaintenanceMode() {
+      try {
+        const maintenanceMode = localStorage.getItem('maintenanceMode') === 'true';
+        if (maintenanceMode) {
+          window.location.href = 'maintenance.html';
+        }
+      } catch (error) {
+        console.log('Maintenance check skipped');
+      }
+    }
+
+    checkMaintenanceMode();
+
+    function expandShortForm(key, value) {
+      if (key === 'c') {
+        if (value === 'n') return 'Not Published Yet';
+        return value;
+      }
+
+      if (key.startsWith('g')) {
+        if (value === 'r') return 'Referred';
+        if (value === 'n') return 'Not Published Yet';
+        return value;
+      }
+
+      return value;
+    }
+
+    function getSuffix(num) {
+      const j = num % 10;
+      const k = num % 100;
+      if (j === 1 && k !== 11) return "st";
+      if (j === 2 && k !== 12) return "nd";
+      if (j === 3 && k !== 13) return "rd";
+      return "th";
+    }
+
+    // ✅ Reset form to check another result
+    function resetForm() {
+      document.getElementById('rollNumber').value = '';
+      document.getElementById('resultDisplay').classList.add('hidden');
+      document.getElementById('searchSection').classList.remove('hidden');
+      document.getElementById('errorMessage').innerText = '';
+      document.getElementById('resultBox').classList.remove('pass', 'fail', 'dropout');
+      document.getElementById('rollNumber').focus();
+    }
+
+    document.getElementById('checkAnotherBtn').addEventListener('click', resetForm);
+
+    document.getElementById('checkResult').addEventListener('click', async () => {
+      const roll = document.getElementById('rollNumber').value.trim();
+      const resultDisplay = document.getElementById('resultDisplay');
+      const errorMessage = document.getElementById('errorMessage');
+      const gpaList = document.getElementById('gpaList');
+      const referredSubjects = document.getElementById('referredSubjects');
+      const resultBox = document.getElementById('resultBox');
+      const studentStatus = document.getElementById('studentStatus');
+      const referredText = document.getElementById('referredText');
+      const cgpaElement = document.getElementById('cgpa');
+      const checkButton = document.getElementById('checkResult');
+      const dropoutMessage = document.getElementById('dropoutMessage');
+      const checkAnotherBtn = document.getElementById('checkAnotherBtn');
+
+      errorMessage.innerText = '';
+      gpaList.innerHTML = '';
+      referredText.innerHTML = '';
+      studentStatus.innerText = '';
+      cgpaElement.innerText = '';
+      dropoutMessage.innerHTML = '';
+      resultDisplay.classList.add('hidden');
+      referredSubjects.classList.add('hidden');
+      dropoutMessage.classList.add('hidden');
+      checkAnotherBtn.classList.add('hidden');
+      resultBox.classList.remove('pass', 'fail', 'dropout');
+
+      if (!roll) {
+        errorMessage.innerText = '⚠️ Please enter a roll number!';
+        return;
+      }
+
+      if (roll.length !== 6 || !/^\d+$/.test(roll)) {
+        errorMessage.innerText = '⚠️ Roll number must be 6 digits!';
+        return;
+      }
+
+      checkButton.innerHTML = '<span class="loading"></span> Checking...';
+      checkButton.disabled = true;
+
+      try {
+        const data = await getResult(roll);
+
+        if (!data) {
+          errorMessage.innerHTML = '<strong>Result Not Found!</strong><br><br>We are uploading new results. Please wait, you will be able to see your result soon.<br><br>Check back in a few minutes.';
+          errorMessage.style.color = '#f39c12';
+          errorMessage.style.background = '#fff3cd';
+          errorMessage.style.padding = '15px';
+          errorMessage.style.borderRadius = '8px';
+          errorMessage.style.border = '2px solid #f39c12';
+          checkButton.innerHTML = '🔍 Check Result';
+          checkButton.disabled = false;
+          return;
+        }
+
+        document.getElementById('studentRoll').innerText = roll;
+
+        // Check if student has any GPA data
+        const hasGPA = data.cgpa || data.c || 
+                       data.g1 || data.g2 || data.g3 || data.g4 || 
+                       data.g5 || data.g6 || data.g7 || data.g8 ||
+                       data.gpa1 || data.gpa2 || data.gpa3 || data.gpa4 ||
+                       data.gpa5 || data.gpa6 || data.gpa7 || data.gpa8;
+
+        const refSubjects = data.ref_sub || data.s || data.referred || [];
+        const hasSubjects = refSubjects && refSubjects.length > 0 &&
+                           refSubjects[0] !== 'None' && 
+                           refSubjects[0] !== 'pass' && 
+                           refSubjects[0] !== 'passed';
+
+        // ✅ DROPOUT DETECTION: Has subjects but NO GPA
+        if (hasSubjects && !hasGPA) {
+          resultBox.classList.add('dropout');
+          studentStatus.innerText = '❌ Status: Dropped Out';
+          studentStatus.style.color = '#dc3545';
+
+          dropoutMessage.innerHTML = `
+            <div class="dropout-message">
+              ⚠️ YOU HAVE DROPPED OUT
+            </div>
+            <div class="motivation-text">
+              📚 <strong>Don't give up on learning!</strong><br><br>
+              Please don't forget to read books every day. Knowledge is the key to success.
+              You can always restart your journey!
+            </div>
+          `;
+          dropoutMessage.classList.remove('hidden');
+
+          // Show referred subjects with names
+          referredSubjects.classList.remove('hidden');
+          
+          const subjects = typeof refSubjects === 'string' 
+            ? refSubjects.split(',').map(s => s.trim()) 
+            : refSubjects;
+
+          subjects.forEach(subject => {
+            const subjectName = getSubjectName(subject);
+            if (subjectName) {
+              referredText.innerHTML += `
+                <div class="ref-subject">
+                  <span class="subject-code">${subject}</span>
+                  <span class="subject-name">${subjectName}</span>
+                </div>
+              `;
+            } else {
+              referredText.innerHTML += `<div class="ref-subject"><span class="subject-code">${subject}</span></div>`;
+            }
+          });
+
+          resultDisplay.classList.remove('hidden');
+          checkAnotherBtn.classList.remove('hidden');
+          checkButton.innerHTML = '🔍 Check Result';
+          checkButton.disabled = false;
+          return;
+        }
+
+        // Normal result processing
+        if (data.cgpa || data.c) {
+          const cgpaValue = expandShortForm('c', data.cgpa || data.c);
+          cgpaElement.innerText = `🎓 CGPA: ${cgpaValue}`;
+        }
+
+        const gpaKeys = [];
+        for (let i = 1; i <= 8; i++) {
+          const key = `g${i}`;
+          if (data[key] !== undefined) {
+            gpaKeys.push({ key, value: data[key] });
+          } else if (data.gpa && data.gpa[key]) {
+            gpaKeys.push({ key, value: data.gpa[key] });
+          } else if (data[`gpa${i}`] !== undefined) {
+            gpaKeys.push({ key: `g${i}`, value: data[`gpa${i}`] });
+          }
+        }
+
+        gpaKeys.forEach(({ key, value }) => {
+          const semNum = key.substring(1);
+          const displayValue = expandShortForm(key, value);
+          gpaList.innerHTML += `<li><strong>${semNum}${getSuffix(semNum)} Semester:</strong> ${displayValue}</li>`;
+        });
+
+        if (hasSubjects) {
+          const subjects = typeof refSubjects === 'string' 
+            ? refSubjects.split(',').map(s => s.trim()) 
+            : refSubjects;
+
+          subjects.forEach(subject => {
+            const subjectName = getSubjectName(subject);
+            if (subjectName) {
+              referredText.innerHTML += `
+                <div class="ref-subject">
+                  <span class="subject-code">${subject}</span>
+                  <span class="subject-name">${subjectName}</span>
+                </div>
+              `;
+            } else {
+              referredText.innerHTML += `<div class="ref-subject"><span class="subject-code">${subject}</span></div>`;
+            }
+          });
+
+          referredSubjects.classList.remove('hidden');
+          resultBox.classList.add('fail');
+          studentStatus.innerText = '⚠️ Status: Failed (Referred)';
+        } else {
+          resultBox.classList.add('pass');
+          studentStatus.innerText = '✅ Status: Passed';
+        }
+
+        resultDisplay.classList.remove('hidden');
+        checkAnotherBtn.classList.remove('hidden');
+      } catch (error) {
+        console.error('Error:', error);
+        errorMessage.innerText = '❌ Error fetching result. Please try again.';
+      } finally {
+        checkButton.innerHTML = '🔍 Check Result';
+        checkButton.disabled = false;
+      }
+    });
+
+    document.getElementById('rollNumber').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('checkResult').click();
+      }
+    });
+
+    // Auto-focus on roll number input
+    document.getElementById('rollNumber').focus();
+  </script>
+</body>
+</html>

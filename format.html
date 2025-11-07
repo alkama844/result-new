@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Result Format Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .format-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .format-info h3 {
+            margin-top: 0;
+            color: #2980b9;
+        }
+
+        .format-info code {
+            background-color: #fff;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #e74c3c;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            font-family: monospace;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .upload-btn {
+            background-color: #27ae60;
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .upload-btn:hover {
+            background-color: #229954;
+        }
+
+        .output {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #copyButton {
+            margin-top: 10px;
+        }
+
+        .example {
+            background-color: #d5f4e6;
+            padding: 10px;
+            border-left: 4px solid #27ae60;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+
+        .stats {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .debug {
+            background-color: #e8f4f8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #3498db;
+            font-size: 11px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🔄 Universal Result Converter</h1>
+
+        <div class="format-info">
+            <h3>✨ Detects ALL Formats Automatically</h3>
+            <div class="example">
+                ✅ Curly braces { } | ✅ Parentheses ( ) | ✅ Multi-line | ✅ CGPA | ✅ Dropout | ✅ Referred subjects
+            </div>
+            <p><strong>Output:</strong> <code>roll|c:CGPA|g1:GPA,...|s:subjects</code></p>
+        </div>
+
+        <div class="section">
+            <h2>📋 Paste Results Here</h2>
+            <textarea id="inputResult" placeholder="Paste any format - with or without line breaks..."></textarea>
+        </div>
+
+        <div class="section">
+            <button onclick="formatResult()">🚀 Convert Now</button>
+        </div>
+
+        <div class="section">
+            <h2>📤 Converted Output</h2>
+            <div id="outputResult" class="output"></div>
+            <div id="stats" class="stats" style="display: none;"></div>
+            <div id="debug" class="debug" style="display: none;"></div>
+            <button id="copyButton" onclick="copyToClipboard()">📋 Copy All</button>
+        </div>
+
+        <button class="upload-btn" onclick="window.location.href='admin.html'">📤 Upload to Database</button>
+
+        <p style="margin-top: 20px; text-align: center; font-size: 12px; color: #7f8c8d;">
+            <a href="hidden.html" style="color: #7f8c8d; text-decoration: none;">Admin Hub</a> |
+            <a href="admin.html" style="color: #7f8c8d; text-decoration: none;">Upload Results</a>
+        </p>
+    </div>
+
+    <script>
+        function formatResult() {
+            const inputText = document.getElementById("inputResult").value.trim();
+            const outputElement = document.getElementById("outputResult");
+            const statsElement = document.getElementById("stats");
+            const debugElement = document.getElementById("debug");
+
+            outputElement.textContent = "";
+            statsElement.style.display = "none";
+            debugElement.innerHTML = "";
+            debugElement.style.display = "none";
+
+            if (!inputText) {
+                outputElement.textContent = "⚠️ Please paste results to convert!";
+                return;
+            }
+
+            const { results, debugLog } = parseAllFormats(inputText);
+
+            if (results.length === 0) {
+                outputElement.textContent = "❌ No valid results found. Check input format.";
+                debugElement.style.display = "block";
+                debugElement.innerHTML = debugLog.join('<br>');
+                return;
+            }
+
+            outputElement.textContent = results.join("\n");
+            
+            statsElement.style.display = "block";
+            statsElement.innerHTML = `<strong>✅ Successfully converted ${results.length} result(s)!</strong>`;
+            
+            debugElement.style.display = "block";
+            debugElement.innerHTML = debugLog.join('<br>');
+        }
+
+        // ✅ ULTIMATE PARSER - Handles EVERYTHING
+        function parseAllFormats(text) {
+            const debugLog = [];
+            const allResults = new Map();
+            
+            debugLog.push(`📝 Input: ${text.length} chars, ${text.split('\n').length} lines`);
+            
+            // ✅ STEP 1: First pass - collect ALL entries from all methods
+            const allEntries = [];
+            
+            // Method 1: Character-by-character parsing (HANDLES LINE BREAKS!)
+            debugLog.push('<br><strong>🔍 Method 1: Character-by-Character (Line Breaks Safe)</strong>');
+            const charEntries = extractByCharacterParsing(text);
+            debugLog.push(`   Found ${charEntries.length} entries`);
+            allEntries.push(...charEntries);
+            
+            // Method 2: Normalized text parsing (removes line breaks)
+            const normalized = text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+            
+            debugLog.push('<br><strong>🔍 Method 2: Curly Braces { }</strong>');
+            const curlyEntries = extractCurlyBraceEntries(normalized);
+            debugLog.push(`   Found ${curlyEntries.length} entries`);
+            allEntries.push(...curlyEntries);
+            
+            debugLog.push('<br><strong>🔍 Method 3: Parentheses ( )</strong>');
+            const parenEntries = extractParenthesesEntries(normalized);
+            debugLog.push(`   Found ${parenEntries.length} entries`);
+            allEntries.push(...parenEntries);
+            
+            debugLog.push('<br><strong>🔍 Method 4: Roll Boundaries</strong>');
+            const boundaryEntries = extractByRollBoundaries(normalized);
+            debugLog.push(`   Found ${boundaryEntries.length} entries`);
+            allEntries.push(...boundaryEntries);
+            
+            // ✅ STEP 2: Parse all collected entries
+            debugLog.push('<br><strong>📊 Parsing Results...</strong>');
+            allEntries.forEach((entry, idx) => {
+                const parsed = parseEntry(entry);
+                if (parsed) {
+                    const roll = parsed.split('|')[0];
+                    if (!allResults.has(roll)) {
+                        allResults.set(roll, parsed);
+                        debugLog.push(`   ✅ ${roll}`);
+                    }
+                }
+            });
+            
+            debugLog.push(`<br><strong>🎯 TOTAL UNIQUE: ${allResults.size} results</strong>`);
+            
+            return {
+                results: Array.from(allResults.values()).sort((a, b) => {
+                    const rollA = a.split('|')[0];
+                    const rollB = b.split('|')[0];
+                    return rollA.localeCompare(rollB);
+                }),
+                debugLog
+            };
+        }
+
+        // ✅ NEW METHOD: Character-by-character parsing (PRESERVES LINE BREAKS!)
+        function extractByCharacterParsing(text) {
+            const entries = [];
+            const rolls = [];
+            
+            // Find ALL roll numbers with their positions
+            for (let i = 0; i < text.length; i++) {
+                if (/\d/.test(text[i])) {
+                    let roll = '';
+                    let start = i;
+                    while (i < text.length && /\d/.test(text[i]) && roll.length < 6) {
+                        roll += text[i];
+                        i++;
+                    }
+                    if (roll.length === 6) {
+                        rolls.push({ roll, start, end: i });
+                    }
+                }
+            }
+            
+            // For each roll, find its complete entry
+            for (let i = 0; i < rolls.length; i++) {
+                const { roll, start } = rolls[i];
+                let entryEnd = rolls[i + 1] ? rolls[i + 1].start : text.length;
+                
+                // Find opening bracket/brace after roll number
+                let openPos = start + 6;
+                while (openPos < entryEnd && /\s/.test(text[openPos])) openPos++;
+                
+                if (openPos < entryEnd) {
+                    const openChar = text[openPos];
+                    
+                    if (openChar === '{' || openChar === '(') {
+                        const closeChar = openChar === '{' ? '}' : ')';
+                        let depth = 0;
+                        let closePos = openPos;
+                        
+                        // Find matching closing character
+                        while (closePos < text.length) {
+                            if (text[closePos] === openChar) depth++;
+                            if (text[closePos] === closeChar) {
+                                depth--;
+                                if (depth === 0) {
+                                    // Extract complete entry (including line breaks)
+                                    const entry = text.substring(start, closePos + 1);
+                                    entries.push(entry);
+                                    break;
+                                }
+                            }
+                            closePos++;
+                        }
+                    } else if (text.substring(openPos, openPos + 4).toLowerCase() === 'cgpa') {
+                        // CGPA format
+                        let closePos = openPos;
+                        while (closePos < entryEnd && text[closePos] !== ')') closePos++;
+                        if (text[closePos] === ')') {
+                            const entry = text.substring(start, closePos + 1);
+                            entries.push(entry);
+                        }
+                    }
+                }
+            }
+            
+            return entries;
+        }
+
+        // ✅ ENHANCED: Curly braces
+        function extractCurlyBraceEntries(text) {
+            const entries = [];
+            let i = 0;
+            
+            while (i < text.length) {
+                // Find roll number
+                if (/\d/.test(text[i])) {
+                    let roll = '';
+                    let start = i;
+                    while (i < text.length && /\d/.test(text[i]) && roll.length < 6) {
+                        roll += text[i];
+                        i++;
+                    }
+                    
+                    if (roll.length === 6) {
+                        // Skip whitespace
+                        while (i < text.length && /\s/.test(text[i])) i++;
+                        
+                        // Look for {
+                        if (i < text.length && text[i] === '{') {
+                            let depth = 0;
+                            let end = i;
+                            while (end < text.length) {
+                                if (text[end] === '{') depth++;
+                                if (text[end] === '}') {
+                                    depth--;
+                                    if (depth === 0) {
+                                        entries.push(text.substring(start, end + 1));
+                                        i = end + 1;
+                                        break;
+                                    }
+                                }
+                                end++;
+                            }
+                        }
+                    }
+                } else {
+                    i++;
+                }
+            }
+            
+            return entries;
+        }
+
+        // ✅ ENHANCED: Parentheses
+        function extractParenthesesEntries(text) {
+            const entries = [];
+            let i = 0;
+            
+            while (i < text.length) {
+                if (/\d/.test(text[i])) {
+                    let roll = '';
+                    let start = i;
+                    while (i < text.length && /\d/.test(text[i]) && roll.length < 6) {
+                        roll += text[i];
+                        i++;
+                    }
+                    
+                    if (roll.length === 6) {
+                        // Skip whitespace and optional "cgpa:"
+                        let j = i;
+                        while (j < text.length && /\s/.test(text[j])) j++;
+                        
+                        // Check for cgpa
+                        if (text.substring(j, j + 4).toLowerCase() === 'cgpa') {
+                            j += 4;
+                            while (j < text.length && /[\s:0-9.n]/.test(text[j])) j++;
+                        }
+                        
+                        // Look for (
+                        while (j < text.length && /\s/.test(text[j])) j++;
+                        
+                        if (j < text.length && text[j] === '(') {
+                            let depth = 0;
+                            let end = j;
+                            while (end < text.length) {
+                                if (text[end] === '(') depth++;
+                                if (text[end] === ')') {
+                                    depth--;
+                                    if (depth === 0) {
+                                        entries.push(text.substring(start, end + 1));
+                                        i = end + 1;
+                                        break;
+                                    }
+                                }
+                                end++;
+                            }
+                        }
+                    }
+                } else {
+                    i++;
+                }
+            }
+            
+            return entries;
+        }
+
+        // ✅ Roll boundaries
+        function extractByRollBoundaries(text) {
+            const entries = [];
+            const rollPositions = [];
+            
+            for (let i = 0; i < text.length; i++) {
+                if (/\d/.test(text[i])) {
+                    let roll = '';
+                    let start = i;
+                    while (i < text.length && /\d/.test(text[i]) && roll.length < 6) {
+                        roll += text[i];
+                        i++;
+                    }
+                    if (roll.length === 6) {
+                        rollPositions.push({ roll, index: start });
+                    }
+                }
+            }
+            
+            for (let i = 0; i < rollPositions.length; i++) {
+                const start = rollPositions[i].index;
+                const end = rollPositions[i + 1] ? rollPositions[i + 1].index : text.length;
+                entries.push(text.substring(start, end).trim());
+            }
+            
+            return entries;
+        }
+
+        // ✅ ENHANCED: Parse entry
+        function parseEntry(entry) {
+            // Normalize whitespace (including line breaks)
+            entry = entry.replace(/\s+/g, ' ').trim();
+            
+            const rollMatch = entry.match(/(\d{6})/);
+            if (!rollMatch) return null;
+            
+            const roll = rollMatch[1];
+            let cgpa = null;
+            const gpaData = {};
+            let subjects = [];
+            
+            // CGPA
+            const cgpaMatch = entry.match(/cgpa:\s*([\d.]+|n)/i);
+            if (cgpaMatch) {
+                cgpa = cgpaMatch[1];
+            }
+            
+            // GPA (stop BEFORE ref_sub to avoid mixing)
+            const refSubIndex = entry.indexOf('ref_sub:');
+            const gpaSearchArea = refSubIndex > 0 ? entry.substring(0, refSubIndex) : entry;
+            
+            const gpaRegex = /gpa(\d+):\s*([\d.]+|ref|r|n)/gi;
+            let gpaMatch;
+            while ((gpaMatch = gpaRegex.exec(gpaSearchArea)) !== null) {
+                const semNum = gpaMatch[1];
+                let value = gpaMatch[2].toLowerCase();
+                
+                if (value === 'ref') value = 'r';
+                if (value === 'not published yet') value = 'n';
+                
+                gpaData[`g${semNum}`] = value;
+            }
+            
+            // Subjects - PRIORITY: ref_sub
+            const refSubMatch = entry.match(/ref_sub:\s*([^}]+?)(?:\}|$)/);
+            if (refSubMatch) {
+                subjects = extractSubjectCodes(refSubMatch[1]);
+            } else {
+                // Check for dropout format (subjects only)
+                const contentMatch = entry.match(/\{([^}]+)\}/);
+                if (contentMatch) {
+                    const content = contentMatch[1];
+                    if (!/gpa\d+:/i.test(content) && !/cgpa:/i.test(content)) {
+                        subjects = extractSubjectCodes(content);
+                    }
+                }
+            }
+            
+            // Build output
+            let result = roll;
+            
+            if (cgpa) result += `|c:${cgpa}`;
+            
+            if (Object.keys(gpaData).length > 0) {
+                const sorted = Object.keys(gpaData).sort((a, b) => 
+                    parseInt(a.substring(1)) - parseInt(b.substring(1))
+                );
+                result += `|${sorted.map(k => `${k}:${gpaData[k]}`).join(',')}`;
+            }
+            
+            if (subjects.length > 0) {
+                result += `|s:${subjects.join(',')}`;
+            }
+            
+            // Only return if we have data
+            if (cgpa || Object.keys(gpaData).length > 0 || subjects.length > 0) {
+                return result;
+            }
+            
+            return null;
+        }
+
+        // ✅ Extract subject codes
+        function extractSubjectCodes(text) {
+            return text
+                .split(',')
+                .map(s => s.trim()
+                    .replace(/\(T\)/g, '')
+                    .replace(/\(P\)/g, '')
+                    .replace(/\(T,P\)/g, '')
+                    .replace(/[^\d]/g, '')
+                )
+                .filter(s => s && s.length === 5 && /^\d{5}$/.test(s));
+        }
+
+        function copyToClipboard() {
+            const outputText = document.getElementById("outputResult").textContent;
+            if (outputText && !outputText.startsWith('⚠️') && !outputText.startsWith('❌')) {
+                navigator.clipboard.writeText(outputText)
+                    .then(() => {
+                        alert("✅ Copied to clipboard! Ready to upload.");
+                    })
+                    .catch(err => {
+                        alert("❌ Failed to copy: " + err);
+                    });
+            } else {
+                alert("⚠️ No results to copy!");
+            }
+        }
+    </script>
+
+</body>
+</html>

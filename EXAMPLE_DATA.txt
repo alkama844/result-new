@@ -1,0 +1,112 @@
+========================================
+EXAMPLE DATA - Short Format
+========================================
+
+PASSED STUDENTS (No Referred Subjects)
+---------------------------------------
+
+731625|c:3.06|g:3.06,3.30,2.76,3.25
+731627|c:3.05|g:3.05,2.94,2.74,3.15
+731631|c:3.14|g:3.14,3.16,3.12,3.23
+
+
+FAILED STUDENTS (With Referred Subjects)
+-----------------------------------------
+
+731622|c:3.43|g:3.43,2.93,r,3.43|s:26731
+731630|c:2.90|g:2.90,r,3.02,3.32|s:25921
+731644|c:3.12|g:3.12,r,2.97,r|s:26742,26833
+
+
+NOT PUBLISHED YET
+-----------------
+
+731700|c:n|g:n,n,n,n
+731701|c:n|g:3.2,3.4,n,n
+
+
+MIXED SCENARIOS
+---------------
+
+# Student with multiple referred semesters
+731656|c:2.90|g:2.90,r,r,r|s:25921,26731,26742,27044
+
+# Student with referred subject but passing CGPA
+731608|c:2.92|g:3.05,2.53,2.85,2.92|s:27044
+
+# Student with 8 semesters
+731622|c:3.32|g:3.43,2.93,r,3.43,3.2,3.4,3.6,3.8|s:26731
+
+
+========================================
+FORMAT BREAKDOWN
+========================================
+
+Format: RollNumber|c:CGPA|g:GPA1,GPA2,...|s:Subjects
+
+Example: 731622|c:3.43|g:3.43,2.93,r,3.43|s:26731
+
+Parts:
+  - 731622        = Roll Number (6 digits)
+  - c:3.43        = CGPA value
+  - g:3.43,2.93,r = GPA for semesters (r = referred)
+  - s:26731       = Referred subjects (optional)
+
+
+SPECIAL VALUES
+--------------
+
+c:n     = CGPA Not Published Yet
+g:r     = Semester referred
+g:n     = Semester not published
+s:      = No referred subjects (can be omitted)
+
+
+VALIDATION RULES
+----------------
+
+1. Roll number must be 6 digits
+2. Use | (pipe) as separator
+3. CGPA after c:
+4. GPA values comma-separated after g:
+5. Referred subjects after s: (optional)
+6. No spaces in the format
+7. Use 'r' for referred
+8. Use 'n' for not published
+
+
+CONVERSION EXAMPLES
+-------------------
+
+LONG FORMAT:
+731622 (CGPA: 3.43) (1st: 3.43, 2nd: 2.93, 3rd: ref, 4th: 3.43) [Referred: 26731(T)]
+
+SHORT FORMAT:
+731622|c:3.43|g:3.43,2.93,r,3.43|s:26731
+
+
+LONG FORMAT:
+731625 (CGPA: 3.06) (1st: 3.06, 2nd: 3.30, 3rd: 2.76, 4th: 3.25) [Referred: None]
+
+SHORT FORMAT:
+731625|c:3.06|g:3.06,3.30,2.76,3.25
+
+
+LONG FORMAT:
+731630 (CGPA: Not Published Yet) (1st: Not Published Yet, 2nd: Not Published Yet)
+
+SHORT FORMAT:
+731630|c:n|g:n,n
+
+
+========================================
+READY TO USE - COPY BELOW
+========================================
+
+731625|c:3.06|g:3.06,3.30,2.76,3.25
+731627|c:3.05|g:3.05,2.94,2.74,3.15
+731631|c:3.14|g:3.14,3.16,3.12,3.23
+731622|c:3.43|g:3.43,2.93,r,3.43|s:26731
+731630|c:2.90|g:2.90,r,3.02,3.32|s:25921
+
+========================================

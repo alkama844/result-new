@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Under Maintenance - BTEB Result Check</title>
+  <link rel="icon" type="image/x-icon" href="weblogo.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .maintenance-container {
+      background: white;
+      border-radius: 20px;
+      padding: 50px 40px;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .maintenance-icon {
+      font-size: 100px;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    h1 {
+      color: #2c3e50;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #667eea;
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    p {
+      color: #555;
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .message-box {
+      background: #e8f4f8;
+      border-left: 4px solid #3498db;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 30px 0;
+      text-align: left;
+    }
+
+    .message-box h3 {
+      color: #2980b9;
+      margin-bottom: 10px;
+    }
+
+    .message-box p {
+      font-size: 16px;
+      color: #34495e;
+    }
+
+    .contact-info {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #ecf0f1;
+    }
+
+    .contact-info a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+
+    .spinner {
+      margin: 20px auto;
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .maintenance-container {
+        padding: 40px 30px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      .maintenance-icon {
+        font-size: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="maintenance-container">
+    <div class="maintenance-icon">🔧</div>
+    <h1>Under Maintenance</h1>
+    <h2>We're Uploading New Results</h2>
+
+    <div class="spinner"></div>
+
+    <p>Our system is currently being updated with the latest results.</p>
+
+    <div class="message-box">
+      <h3>What's Happening?</h3>
+      <p>We are uploading new examination results to our database. This process ensures you get the most accurate and up-to-date information.</p>
+      <p><strong>You'll be able to check your results very soon!</strong></p>
+    </div>
+
+    <p>Please check back in a few minutes.</p>
+    <p>We appreciate your patience and understanding.</p>
+
+    <div class="contact-info">
+      <p><strong>Need Help?</strong></p>
+      <p>Contact us: <a href="mailto:nafijrahaman2022@gmail.com">nafijrahaman2022@gmail.com</a></p>
+      <p>Follow updates: <a href="https://m.facebook.com/nafijrahaman2023" target="_blank">Facebook</a></p>
+    </div>
+  </div>
+</body>
+</html>

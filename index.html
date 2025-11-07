@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bteb Result Cheek</title>
+ <link rel="icon" type="image/x-icon" href="weblogo.png">
+<!-- SEO Meta Tags -->
+  <meta name="description" content="Check BTEB diploma results online. Fast and accurate result checking for Magura Polytechnic Institute students. Get your Bangladesh Technical Education Board examination results instantly.">
+  <meta name="keywords" content="bteb result check, btebresultcheek, btebresult, polytechnic result, polytechnic result check, diploma result check, Magura Polytechnic Institute, Magura Polytechnic result, Magura poly result, Bangladesh Technical Board Result, Bangladesh Technical Education Board, BTEB results published, btebresultzone, bteb result, bteb exam result, diploma exam result, polytechnic exam result, technical education result, nafijrahaman, nafij, nafij.me, nafijrahaman.me, nafijpro, btebresultcheek.me, btebresultcheek.tech, btebresultcheek.dev, btebresultcheek.com, btebresultcheek.net, btebresultcheek.org, BTEB online result, BTEB result 2025, polytechnic result 2025, diploma result 2025">
+  <meta name="author" content="Nafij Rahaman">
+  <meta name="robots" content="index, follow">
+  <meta name="google-site-verification" content="google5f8166c1c5eff5d2">
+  <meta name="language" content="English">
+  <meta name="revisit-after" content="1 days">
+  <meta name="geo.region" content="BD">
+  <meta name="geo.placename" content="Magura, Bangladesh">
+
+  <!-- Open Graph Meta Tags (for Facebook & Social Media) -->
+  <meta property="og:title" content="BTEB Result Check - Magura Polytechnic Institute Results">
+  <meta property="og:description" content="Check your BTEB diploma examination results online. Fast and accurate result checking system for Magura Polytechnic Institute students.">
+  <meta property="og:image" content="https://btebresultcheek.vercel.app/files/logo.png">
+  <meta property="og:url" content="https://btebresultcheek.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BTEB Result Check">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="BTEB Result Check - Magura Polytechnic Institute">
+  <meta name="twitter:description" content="Check your diploma examination results fast and accurate. Get instant access to your BTEB results.">
+  <meta name="twitter:image" content="https://btebresultcheek.vercel.app/files/logo.png">
+  <meta name="twitter:site" content="@btebresultcheek">
+  <meta name="twitter:creator" content="@nafijrahaman">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://btebresultcheek.vercel.app/">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://btebresultcheek.vercel.app/files/weblogo.png">
+
+  <!-- Structured Data (Schema Markup for SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "BTEB Result Check - Magura Polytechnic Institute",
+    "alternateName": ["btebresultcheek", "BTEB Result", "Magura Poly Result"],
+    "url": "https://btebresultcheek.vercel.app/",
+    "logo": "https://btebresultcheek.vercel.app/files/weblogo.png",
+    "description": "Fast and accurate BTEB diploma result checking system for Magura Polytechnic Institute students",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Magura",
+      "addressCountry": "Bangladesh"
+    },
+    "sameAs": [
+      "https://www.facebook.com/nafijrahaman2023",
+      "https://btebresultcheek.me",
+      "https://btebresultcheek.tech",
+      "https://btebresultcheek.dev",
+      "https://btebresultcheek.com"
+    ],
+    "serviceType": "Educational Result Service",
+    "areaServed": "Bangladesh"
+  }
+  </script>
+  
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    /* Navbar */
+    #navbar {
+      background-color: #34495e;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    #navbar .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    #navbar .logo img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    #navbar .logo span {
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+    }
+
+    #navbar .navbar-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    #navbar a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      padding: 5px 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    #navbar a:hover {
+      background-color: #2980b9;
+      border-radius: 5px;
+    }
+
+    /* Hamburger Icon (📃) */
+    #hamburger {
+      font-size: 30px;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* Drawer Menu */
+    #drawer {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 250px;
+      height: 100%;
+      background-color: #34495e;
+      color: white;
+      padding-top: 60px;
+      box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.2);
+       z-index: 1000;
+    }
+
+    #drawer a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+    }
+
+    #drawer a:hover {
+      background-color: #2980b9;
+    }
+
+    /* Marquee Text */
+    #marquee-container {
+      background-color: #2c3e50;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    /* Notice Section */
+    #notice {
+      background-color: #f39c12;
+      padding: 20px;
+      color: white;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 90%;
+    }
+    
+#noticen {
+      background-color: #0aeaf2;
+      padding: 20px;
+      color: white;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 90%;
+    }
+
+    /* Section Styles */
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 20px;
+    }
+
+    .section {
+      margin: 30px 0;
+      padding: 20px;
+      background-color: #ecf0f1;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: 15px;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    /* Icons Section */
+    .icons {
+      font-size: 40px;
+      color: #3498db;
+      margin-bottom: 10px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #34495e;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      width: 100%;
+      position: relative;
+      bottom: 0;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+
+      /* Navbar on small screens */
+      #navbar .navbar-links {
+        display: none;
+      }
+
+      /* Hamburger Menu */
+      #hamburger {
+        display: block;
+      }
+
+      /* Drawer on small screens */
+      #drawer {
+        display: block;
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(100%);
+      }
+
+      #drawer.show {
+        transform: translateX(0);
+      }
+
+      .container {
+        width: 95%;
+      }
+
+      .section {
+        padding: 15px;
+      }
+
+      .btn {
+        width: 80%;
+        padding: 12px;
+      }
+
+    }
+
+    /* Service Boxes section3 */
+    .service {
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      margin: 15px 0;
+    }
+
+    /*  Hover Effects */
+    /* General Hover Effects */
+    a:hover,
+    .btn:hover {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Navbar links hover */
+    #navbar a:hover {
+      background-color: #2980b9;
+      border-radius: 5px;
+    }
+
+    /* Button Hover Effect */
+    .btn:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+      /* Slightly enlarge on hover */
+    }
+
+    /* Service Box Hover Effect */
+    .service:hover {
+      transform: translateY(-5px);
+      /* Lift the box on hover */
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+      /* Increase shadow on hover */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Drawer Menu Links Hover Effect */
+    #drawer a:hover {
+      background-color: #2980b9;
+    }
+
+    /* Hamburger Icon Hover Effect */
+    #hamburger:hover {
+      color: #2980b9;
+      /* Change color of hamburger icon on hover */
+      cursor: pointer;
+    }
+
+    /*  Hover Effects */
+
+     
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <div id="navbar">
+    <div class="logo">
+      <img src="files/logo.png" alt="Logo">
+      <span>RESULT</span>
+    </div>
+    <div class="navbar-links">
+      <a href="#">Home</a>
+      <a href="about.html">About</a>
+      <a href="terms.html">terms</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <!-- Hamburger Icon -->
+    <div id="hamburger">📃</div>
+  </div>
+
+  <!-- Drawer Menu -->
+  <div id="drawer">
+    <a href="#">Home</a>
+    <a href="about.html">About</a>
+    <a href="terms.html">terms</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <!-- Marquee text -->
+  <div id="marquee-container">
+    <marquee behavior="scroll" direction="left">WEBSITE IS RUNNING</marquee>
+  </div>
+
+  <!-- Notice Section -->
+  <div id="noticen" class="noticen">
+    <p class="crea">CREATED BY NAFIJ RAHAMAN
+    [ 5 ET 2 ] roll : 731622 </p>
+  </div>
+
+  <!-- Notice Section -->
+  <div id="notice">
+    <p> notice here </p>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="container">
+
+    <!-- Section 1 -->
+    <div class="section">
+      <h2>Welcome to My Website</h2>
+      <p>This website provides result of only magura polytecnic institute.</p>
+      <a href="student1.html" class="btn">View Results</a>
+    </div>
+
+    <!-- Services Section -->
+    <div class="section">
+      <h2>Our Services</h2>
+      <p>Explore the best services we provide for you.</p>
+
+      <!-- Service 1 -->
+      <div class="service">
+        <h3>📊 Visit 2nd link (cgpa)</h3>
+        <p>Monitor real-time results efficiently.</p>
+        <a href="student.html" class="btn">View Results 2</a>
+      </div>
+
+      <!-- Service 2 -->
+      <div class="service">
+        <h3>🎓 Education Support</h3>
+        <p>Get expert guidance and study tips.</p>
+      </div>
+
+      <!-- Service 3 -->
+      <div class="service">
+        <h3>🌏view all result🌏</h3>
+        <p>cheek bteb result zone for all result</p>
+        <a href="https://btebresultszone.com/" class="btn">View All Results</a>
+      </div>
+
+      <!-- Button -->
+      <a href="index.html" class="btn">Explore More</a>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="section">
+      <h2>Stay Updated</h2>
+      <p>Get the latest updates and results, ensuring you always have fresh information.</p>
+      <a href="https://m.facebook.com/nafijrahaman2023" class="btn">Stay Updated</a>
+    </div>
+
+  </div>
+
+  <!-- Footer Section -->
+  <footer>
+    <p>Created by <a href="https://m.facebook.com/nafijrahaman2023" target="_blank">NAFIJ RAHAMAN</a></p>
+  </footer>
+
+  <script>
+    // Check maintenance mode (admins bypass)
+    function checkMaintenanceMode() {
+      try {
+        const maintenanceMode = localStorage.getItem('maintenanceMode') === 'true';
+        const adminEmail = localStorage.getItem('adminEmail');
+
+        // Redirect to maintenance if mode is ON and user is NOT an admin
+        if (maintenanceMode && !adminEmail) {
+          window.location.href = 'maintenance.html';
+        }
+      } catch (error) {
+        console.log('Maintenance check skipped');
+      }
+    }
+
+    checkMaintenanceMode();
+
+    // Toggle Drawer Menu
+    const hamburger = document.getElementById('hamburger');
+    const drawer = document.getElementById('drawer');
+    hamburger.addEventListener('click', () => {
+      drawer.classList.toggle('show');
+    });
+
+    // Close drawer when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!drawer.contains(e.target) && !hamburger.contains(e.target)) {
+        drawer.classList.remove('show');
+      }
+    });
+  </script>
+
+</body>
+
+</html>

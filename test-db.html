@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧪 Database Test - BTEB Result System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 32px;
+      color: #00ff00;
+      text-shadow: 0 0 10px #00ff00;
+    }
+
+    .test-section {
+      background: #2d2d2d;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 10px;
+      border: 2px solid #00ff00;
+    }
+
+    .test-section h2 {
+      color: #00bfff;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .test-result {
+      background: #1a1a1a;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border-left: 4px solid #00ff00;
+      white-space: pre-wrap;
+      font-size: 14px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .test-result.error {
+      border-left-color: #ff0000;
+      color: #ff6b6b;
+    }
+
+    .test-result.success {
+      border-left-color: #00ff00;
+      color: #00ff00;
+    }
+
+    .test-result.warning {
+      border-left-color: #ffaa00;
+      color: #ffaa00;
+    }
+
+    button {
+      background: #00ff00;
+      color: #000;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      margin: 5px;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #00cc00;
+      transform: scale(1.05);
+    }
+
+    button:disabled {
+      background: #666;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #333;
+      border-top: 3px solid #00ff00;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .status-badge.online {
+      background: #00ff00;
+      color: #000;
+    }
+
+    .status-badge.offline {
+      background: #ff0000;
+      color: #fff;
+    }
+
+    .status-badge.warning {
+      background: #ffaa00;
+      color: #000;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 15px 0;
+    }
+
+    .info-card {
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #444;
+    }
+
+    .info-card h3 {
+      color: #00bfff;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .info-card .value {
+      color: #00ff00;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    input {
+      background: #1a1a1a;
+      border: 2px solid #00ff00;
+      color: #00ff00;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      width: 200px;
+      font-family: 'Courier New', monospace;
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 10px #00ff00;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 DATABASE CONNECTION TEST</h1>
+
+    <!-- API Configuration -->
+    <div class="test-section">
+      <h2>🌐 API Configuration</h2>
+      <div id="apiConfig" class="test-result">Loading...</div>
+    </div>
+
+    <!-- Health Check -->
+    <div class="test-section">
+      <h2>
+        💓 Health Check
+        <span id="healthStatus" class="status-badge offline">CHECKING...</span>
+      </h2>
+      <button onclick="testHealth()">🔄 Check Health</button>
+      <div id="healthResult" class="test-result">Initializing...</div>
+    </div>
+
+    <!-- Database Statistics -->
+    <div class="test-section">
+      <h2>📊 Database Statistics</h2>
+      <button onclick="testStatistics()">📈 Get Statistics</button>
+      <div id="statsResult" class="test-result">Click button to test</div>
+      <div id="statsGrid" class="info-grid" style="display: none;"></div>
+    </div>
+
+    <!-- Single Result Test -->
+    <div class="test-section">
+      <h2>🔍 Single Result Lookup</h2>
+      <input type="text" id="rollInput" placeholder="Enter 6-digit roll" maxlength="6">
+      <button onclick="testGetResult()">🔎 Search</button>
+      <div id="resultTest" class="test-result">Enter a roll number and click search</div>
+    </div>
+
+    <!-- Sample Data Test -->
+    <div class="test-section">
+      <h2>📋 Sample Data (First 5 Records)</h2>
+      <button onclick="testSampleData()">📥 Get Sample</button>
+      <div id="sampleResult" class="test-result">Click button to fetch sample data</div>
+    </div>
+
+    <!-- CORS Test -->
+    <div class="test-section">
+      <h2>🔐 CORS & Network Test</h2>
+      <button onclick="testCORS()">🌍 Test CORS</button>
+      <div id="corsResult" class="test-result">Click to test cross-origin requests</div>
+    </div>
+
+    <!-- Complete Test -->
+    <div class="test-section">
+      <h2>🚀 Run All Tests</h2>
+      <button onclick="runAllTests()" style="background: #00bfff; color: #000;">▶️ RUN ALL TESTS</button>
+      <div id="allTestsResult" class="test-result">Click to run complete test suite</div>
+    </div>
+  </div>
+
+  <script>
+    // Detect API URL
+    const API_URL = (() => {
+      const hostname = window.location.hostname;
+      const protocol = window.location.protocol;
+      
+      console.log('🌐 Detecting API URL...');
+      console.log('  Hostname:', hostname);
+      console.log('  Protocol:', protocol);
+      
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:10000/api';
+      }
+      
+      if (hostname.includes('onrender.com')) {
+        return `${protocol}//${hostname}/api`;
+      }
+      
+      if (hostname.includes('github.io') || hostname.includes('btebresultcheek')) {
+        return 'https://result-new.onrender.com/api';
+      }
+      
+      return '/api';
+    })();
+
+    console.log('✅ API URL set to:', API_URL);
+
+    // Display API configuration
+    document.getElementById('apiConfig').innerHTML = `
+<strong>✅ Configuration Detected:</strong>
+📍 Current URL: ${window.location.href}
+📍 Hostname: ${window.location.hostname}
+📍 Protocol: ${window.location.protocol}
+🌐 API URL: ${API_URL}
+📁 Origin: ${window.location.origin}
+    `;
+
+    // Test Health
+    function testHealth() {
+      const resultDiv = document.getElementById('healthResult');
+      const statusBadge = document.getElementById('healthStatus');
+      
+      resultDiv.innerHTML = '<div class="loading"></div> Testing connection to ' + API_URL + '/health ...';
+      statusBadge.textContent = 'TESTING...';
+      statusBadge.className = 'status-badge warning';
+      
+      console.log('🔍 Fetching:', API_URL + '/health');
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      fetch(`${API_URL}/health`, {
+        signal: controller.signal,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        clearTimeout(timeoutId);
+        console.log('📡 Response status:', response.status);
+        return response.json();
+      })
+      .then(data => {
+        console.log('📦 Response data:', data);
+        
+        if (data.status === 'ready' || data.database === 'connected') {
+          statusBadge.className = 'status-badge online';
+          statusBadge.textContent = 'ONLINE ✅';
+          resultDiv.className = 'test-result success';
+        } else {
+          statusBadge.className = 'status-badge warning';
+          statusBadge.textContent = 'DEGRADED ⚠️';
+          resultDiv.className = 'test-result warning';
+        }
+        
+        resultDiv.innerHTML = `
+<strong>✅ Health Check Response:</strong>
+${JSON.stringify(data, null, 2)}
+        `;
+      })
+      .catch(error => {
+        clearTimeout(timeoutId);
+        console.error('❌ Health check error:', error);
+        
+        statusBadge.className = 'status-badge offline';
+        statusBadge.textContent = 'OFFLINE ❌';
+        resultDiv.className = 'test-result error';
+        
+        let errorDetails = error.message;
+        
+        if (error.name === 'AbortError') {
+          errorDetails = 'Request timeout (10s) - Server might be down or slow';
+        } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+          errorDetails = 'Network error - Cannot reach server. Possible causes:\n';
+          errorDetails += '  • Server is offline\n';
+          errorDetails += '  • CORS blocked\n';
+          errorDetails += '  • Wrong API URL\n';
+          errorDetails += '  • Network firewall';
+        }
+        
+        resultDiv.innerHTML = `
+<strong>❌ Health Check Failed:</strong>
+Error: ${errorDetails}
+
+API URL: ${API_URL}/health
+Error Type: ${error.name}
+Full Error: ${error.toString()}
+        `;
+      });
+    }
+
+    // Test Statistics
+    function testStatistics() {
+      const resultDiv = document.getElementById('statsResult');
+      const gridDiv = document.getElementById('statsGrid');
+      
+      resultDiv.innerHTML = '<div class="loading"></div> Fetching statistics from ' + API_URL + '/results/statistics ...';
+      gridDiv.style.display = 'none';
+      
+      fetch(`${API_URL}/results/statistics`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(stats => {
+          resultDiv.className = 'test-result success';
+          resultDiv.innerHTML = `
+<strong>✅ Statistics Retrieved:</strong>
+${JSON.stringify(stats, null, 2)}
+          `;
+          
+          gridDiv.style.display = 'grid';
+          gridDiv.innerHTML = `
+            <div class="info-card">
+              <h3>Total Students</h3>
+              <div class="value">${stats.total || 0}</div>
+            </div>
+            <div class="info-card">
+              <h3>Passed</h3>
+              <div class="value">${stats.passed || 0}</div>
+            </div>
+            <div class="info-card">
+              <h3>Failed</h3>
+              <div class="value">${stats.failed || 0}</div>
+            </div>
+            <div class="info-card">
+              <h3>Average CGPA</h3>
+              <div class="value">${stats.avgCGPA || 'N/A'}</div>
+            </div>
+          `;
+        })
+        .catch(error => {
+          resultDiv.className = 'test-result error';
+          resultDiv.innerHTML = `
+<strong>❌ Statistics Failed:</strong>
+${error.message}
+          `;
+        });
+    }
+
+    // Test Get Result
+    function testGetResult() {
+      const roll = document.getElementById('rollInput').value.trim();
+      const resultDiv = document.getElementById('resultTest');
+      
+      if (!roll || roll.length !== 6) {
+        resultDiv.className = 'test-result warning';
+        resultDiv.innerHTML = '⚠️ Please enter a valid 6-digit roll number';
+        return;
+      }
+      
+      resultDiv.innerHTML = '<div class="loading"></div> Searching for ' + roll + '...';
+      
+      fetch(`${API_URL}/results/${roll}`)
+        .then(response => {
+          if (response.status === 404) {
+            resultDiv.className = 'test-result warning';
+            resultDiv.innerHTML = `⚠️ No result found for roll: ${roll}`;
+            return null;
+          }
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(result => {
+          if (result) {
+            resultDiv.className = 'test-result success';
+            resultDiv.innerHTML = `
+<strong>✅ Result Found for ${roll}:</strong>
+${JSON.stringify(result, null, 2)}
+            `;
+          }
+        })
+        .catch(error => {
+          resultDiv.className = 'test-result error';
+          resultDiv.innerHTML = `
+<strong>❌ Search Failed:</strong>
+${error.message}
+          `;
+        });
+    }
+
+    // Test Sample Data
+    function testSampleData() {
+      const resultDiv = document.getElementById('sampleResult');
+      
+      resultDiv.innerHTML = '<div class="loading"></div> Fetching all results from ' + API_URL + '/results/all ...';
+      
+      fetch(`${API_URL}/results/all`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(allResults => {
+          const sample = allResults.slice(0, 5);
+          
+          resultDiv.className = 'test-result success';
+          resultDiv.innerHTML = `
+<strong>✅ Sample Data (${sample.length} of ${allResults.length} total):</strong>
+${JSON.stringify(sample, null, 2)}
+          `;
+        })
+        .catch(error => {
+          resultDiv.className = 'test-result error';
+          resultDiv.innerHTML = `
+<strong>❌ Sample Data Failed:</strong>
+${error.message}
+          `;
+        });
+    }
+
+    // Test CORS
+    function testCORS() {
+      const resultDiv = document.getElementById('corsResult');
+      
+      resultDiv.innerHTML = '<div class="loading"></div> Testing CORS headers...';
+      
+      fetch(`${API_URL}/health`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          const headers = {};
+          response.headers.forEach((value, key) => {
+            headers[key] = value;
+          });
+          
+          resultDiv.className = 'test-result success';
+          resultDiv.innerHTML = `
+<strong>✅ CORS Test Passed:</strong>
+Status: ${response.status} ${response.statusText}
+URL: ${API_URL}/health
+
+Response Headers:
+${JSON.stringify(headers, null, 2)}
+          `;
+        })
+        .catch(error => {
+          resultDiv.className = 'test-result error';
+          resultDiv.innerHTML = `
+<strong>❌ CORS Test Failed:</strong>
+${error.message}
+
+This indicates network/CORS issues.
+          `;
+        });
+    }
+
+    // Run All Tests
+    function runAllTests() {
+      const resultDiv = document.getElementById('allTestsResult');
+      resultDiv.innerHTML = '<div class="loading"></div> Running all tests...\n\n';
+      resultDiv.className = 'test-result';
+      
+      const log = (msg) => {
+        resultDiv.innerHTML += msg + '\n';
+      };
+      
+      const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+      
+      (async () => {
+        try {
+          log('🧪 Test 1: Health Check...');
+          testHealth();
+          await wait(2000);
+          log('✅ Test 1: Initiated\n');
+          
+          log('🧪 Test 2: Statistics...');
+          testStatistics();
+          await wait(2000);
+          log('✅ Test 2: Initiated\n');
+          
+          log('🧪 Test 3: Sample Data...');
+          testSampleData();
+          await wait(2000);
+          log('✅ Test 3: Initiated\n');
+          
+          log('🧪 Test 4: CORS...');
+          testCORS();
+          await wait(2000);
+          log('✅ Test 4: Initiated\n');
+          
+          resultDiv.className = 'test-result success';
+          log('\n🎉 ALL TESTS LAUNCHED! Check results above.');
+        } catch (error) {
+          resultDiv.className = 'test-result error';
+          log('\n❌ TEST SUITE ERROR: ' + error.message);
+        }
+      })();
+    }
+
+    // Auto-run health check
+    window.addEventListener('load', () => {
+      console.log('🚀 Page loaded, running health check in 1 second...');
+      setTimeout(testHealth, 1000);
+    });
+  </script>
+</body>
+</html>

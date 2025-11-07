@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Result Upload</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-top: 80px; /* Space for fixed navbar */
+      overflow-x: hidden;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      padding: 15px 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .navbar-brand span {
+      font-size: 28px;
+    }
+
+    .navbar-menu {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .navbar-link {
+      color: white;
+      text-decoration: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: all 0.3s;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .navbar-link:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    .navbar-button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .navbar-button.logout {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .navbar-button.logout:hover {
+      background: #c0392b;
+      transform: translateY(-2px);
+    }
+
+    .admin-container {
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #ecf0f1;
+    }
+
+    .header-section h2 {
+      margin: 0;
+      font-size: 28px;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    #logout {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+    }
+
+    #uploadResults {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      width: 100%;
+      font-size: 16px;
+      padding: 14px 28px;
+      margin-top: 15px;
+    }
+
+    .refresh-btn, .backup-btn {
+      background: linear-gradient(135deg, #9b59b6, #8e44ad);
+      color: white;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 15px;
+      margin-top: 15px;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      resize: vertical;
+      transition: border-color 0.3s;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin: 25px 0;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      transition: transform 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat-card.green {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    .stat-card.red {
+      background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+    }
+
+    .stat-card.orange {
+      background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+    }
+
+    .stat-card.blue {
+      background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+    }
+
+    .stat-card h3 {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-card .stat-value {
+      font-size: 36px;
+      font-weight: bold;
+      margin: 12px 0;
+    }
+
+    .stat-card .stat-label {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .terminal {
+      background-color: #1e1e1e;
+      color: #00ff00;
+      padding: 20px;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      height: 250px;
+      overflow-y: auto;
+      border-radius: 8px;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    .terminal::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .terminal::-webkit-scrollbar-track {
+      background: #2a2a2a;
+    }
+
+    .terminal::-webkit-scrollbar-thumb {
+      background: #00ff00;
+      border-radius: 5px;
+    }
+
+    .terminal-line {
+      margin: 3px 0;
+      word-break: break-all;
+    }
+
+    .progress-container {
+      margin: 20px 0;
+      display: none;
+    }
+
+    .progress-bar {
+      background-color: #ecf0f1;
+      border-radius: 25px;
+      height: 35px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #3498db, #2ecc71);
+      height: 100%;
+      width: 0%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      transition: width 0.3s;
+    }
+
+    .stats {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+      color: #2c3e50;
+      font-size: 14px;
+    }
+      border-radius: 5px;
+      border: 1px solid #333;
+    }
+
+    .terminal-line {
+      margin: 3px 0;
+      word-wrap: break-word;
+    }
+
+    .progress-container {
+      margin: 20px 0;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 35px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3498db, #2ecc71);
+      transition: width 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .stats {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 13px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      resize: vertical;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+
+    #logout {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    #logout:hover {
+      background-color: #c0392b;
+    }
+
+    #uploadResults {
+      background-color: #3498db;
+      color: white;
+      width: 100%;
+    }
+
+    #uploadResults:hover {
+      background-color: #2980b9;
+    }
+
+    #uploadResults:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+
+    .backup-btn {
+      background-color: #27ae60;
+      color: white;
+    }
+
+    .backup-btn:hover {
+      background-color: #229954;
+    }
+
+    .refresh-btn {
+      background-color: #9b59b6;
+      color: white;
+    }
+
+    .refresh-btn:hover {
+      background-color: #8e44ad;
+    }
+
+    .format-help {
+      background: #e8f4f8;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+      border-left: 4px solid #3498db;
+    }
+
+    .format-help h4 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+
+    .format-help code {
+      background: #fff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #e74c3c;
+      font-weight: bold;
+      word-break: break-all;
+    }
+
+    .format-help ul {
+      padding-left: 20px;
+    }
+
+    .format-help li {
+      margin: 5px 0;
+      word-break: break-all;
+    }
+
+    /* Toggle Switch */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #27ae60;
+      transition: 0.4s;
+      border-radius: 26px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: #e74c3c;
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(24px);
+    }
+
+    .mode-card {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      border-left: 4px solid #f39c12;
+    }
+
+    .mode-card h4 {
+      margin: 0 0 10px 0;
+      color: #856404;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mode-info {
+      font-size: 13px;
+      color: #856404;
+      margin-top: 8px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 5px;
+    }
+
+    .mode-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .mode-badge.merge {
+      background: #27ae60;
+      color: white;
+    }
+
+    .mode-badge.replace {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .top-subjects {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+      border-left: 4px solid #6c757d;
+    }
+
+    .top-subjects h4 {
+      margin-top: 0;
+      color: #495057;
+    }
+
+    .subject-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px;
+      margin: 5px 0;
+      background: white;
+      border-radius: 3px;
+      border-left: 3px solid #007bff;
+    }
+
+    .subject-code {
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .subject-count {
+      background: #007bff;
+      color: white;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+    }
+
+    .backup-section {
+      background: #d4edda;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+      border-left: 4px solid #28a745;
+    }
+
+    .backup-section h4 {
+      margin-top: 0;
+      color: #155724;
+    }
+
+    .backup-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-upload-label {
+      padding: 12px 20px;
+      font-size: 14px;
+      background-color: #f39c12;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      text-align: center;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+
+    .file-upload-label:hover {
+      background-color: #e67e22;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0 10px 0;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .section-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .admin-container {
+        padding: 10px;
+      }
+
+      .header-section {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-section h2 {
+        font-size: 20px;
+      }
+
+      .header-controls {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+      }
+
+      .stat-card .stat-value {
+        font-size: 28px;
+      }
+
+      .stat-card h3 {
+        font-size: 11px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+
+      .terminal {
+        height: 150px;
+        font-size: 11px;
+      }
+
+      textarea {
+        height: 150px;
+        font-size: 12px;
+      }
+
+      .backup-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .admin-container {
+        margin: 10px;
+        padding: 10px;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-card {
+        padding: 15px;
+      }
+
+      .format-help ul {
+        padding-left: 15px;
+      }
+
+      .format-help li {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <h2>📊 Admin Dashboard</h2>
+      <div class="header-controls">
+        <button id="logout">🚪 Logout</button>
+        <div class="toggle-container">
+          <span style="font-weight: bold; font-size: 14px;">Maintenance:</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="maintenanceToggle">
+            <span class="toggle-slider"></span>
+          </label>
+          <span id="maintenanceStatus" style="font-weight: bold; font-size: 14px;">OFF</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Display -->
+    <div id="errorDisplay" style="display: none; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f5c6cb;">
+      <strong>⚠️ Error:</strong> <span id="errorMessage"></span>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <div class="section-header">
+      <h3>📈 Database Statistics</h3>
+      <button class="refresh-btn" id="refreshStats">🔄 Refresh</button>
+    </div>
+    
+    <div class="dashboard-grid">
+      <div class="stat-card blue">
+        <h3>👥 Total Students</h3>
+        <div class="stat-value" id="totalStudents">-</div>
+        <div class="stat-label">in database</div>
+      </div>
+
+      <div class="stat-card green">
+        <h3>✅ Passed</h3>
+        <div class="stat-value" id="passedCount">-</div>
+        <div class="stat-label" id="passedPercent">-</div>
+      </div>
+
+      <div class="stat-card red">
+        <h3>❌ Failed/Referred</h3>
+        <div class="stat-value" id="failedCount">-</div>
+        <div class="stat-label" id="failedPercent">-</div>
+      </div>
+
+      <div class="stat-card orange">
+        <h3>🎓 Average CGPA</h3>
+        <div class="stat-value" id="avgCGPA">-</div>
+        <div class="stat-label">across all students</div>
+      </div>
+    </div>
+
+    <!-- Top Referred Subjects -->
+    <div class="top-subjects" id="topSubjectsSection" style="display: none;">
+      <h4>📚 Most Common Referred Subjects</h4>
+      <div id="topSubjectsList"></div>
+    </div>
+
+    <!-- Backup Section -->
+    <div class="backup-section">
+      <h4>💾 Backup & Restore</h4>
+      <div class="backup-buttons">
+        <button class="backup-btn" id="downloadBackup">📥 Download Backup</button>
+        <label for="restoreFile" class="file-upload-label">📤 Restore Backup</label>
+        <input type="file" id="restoreFile" accept=".json">
+        <button class="backup-btn" id="createAutoBackup">🔄 Auto Backup</button>
+      </div>
+      <div id="lastBackupInfo" style="font-size: 12px; color: #155724; margin-top: 10px;"></div>
+    </div>
+
+    <!-- Upload Mode Toggle -->
+    <div class="mode-card">
+      <h4>
+        ⚙️ Upload Mode 
+        <span class="mode-badge" id="modeBadge">MERGE</span>
+      </h4>
+      <div class="toggle-container">
+        <span style="font-weight: bold;">MERGE</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="uploadModeToggle">
+          <span class="toggle-slider"></span>
+        </label>
+        <span style="font-weight: bold;">REPLACE</span>
+      </div>
+      <div class="mode-info" id="modeDescription">
+        <strong>✅ MERGE Mode:</strong> Keeps existing GPA values unchanged. Only updates fields with new data. Safe for partial updates.
+      </div>
+    </div>
+
+    <!-- Format Help -->
+    <div class="format-help">
+      <h4>📝 Upload Format Guide</h4>
+      <p><strong>Basic Format:</strong> <code>roll|c:cgpa|g1:gpa1,g2:gpa2,...|s:subjects</code></p>
+      
+      <p><strong>Field Meanings:</strong></p>
+      <ul>
+        <li><code>c</code> = CGPA (overall)</li>
+        <li><code>g1-g8</code> = Semester GPA (1st to 8th semester)</li>
+        <li><code>r</code> = Referred/Failed</li>
+        <li><code>n</code> = Not Published</li>
+        <li><code>s</code> = Referred Subject Codes (comma-separated)</li>
+      </ul>
+
+      <p><strong>Complete Examples:</strong></p>
+      <ul>
+        <li><code>731559|c:3.25|g1:3.00,g2:r,g3:2.85|s:25912,26731</code> ← Full record with CGPA, 3 semesters, 2 referred subjects</li>
+        <li><code>731625|g1:3.06,g2:3.30,g3:2.76</code> ← Only semester GPAs, no CGPA</li>
+        <li><code>888888|g2:2.84</code> ← Update ONLY 2nd semester (MERGE mode)</li>
+        <li><code>888888|g1:2.93|s:</code> ← Clear g1, remove all subjects</li>
+        <li><code>888888|g1:r,g2:2.84|s:52678,63782</code> ← g1 failed, g2 clear, 2 subjects</li>
+      </ul>
+
+      <p><strong>💡 Pro Tips:</strong></p>
+      <ul>
+        <li>In <strong>MERGE</strong> mode: Upload only what needs updating</li>
+        <li>To clear subjects: Use <code>s:</code> (empty after colon)</li>
+        <li>To add subjects: Use <code>s:25912,26731</code></li>
+        <li>In <strong>REPLACE</strong> mode: Upload complete record</li>
+      </ul>
+    </div>
+
+    <!-- Upload Section -->
+    <h3>📤 Upload Results</h3>
+    <textarea id="resultInput" placeholder="Paste short format results here...
+
+MERGE Mode Examples (partial updates):
+888888|g2:2.84
+888888|g1:2.93,g2:2.84
+888888|g1:r,g2:2.84|s:52678,63782
+
+REPLACE Mode Example (complete record):
+731559|c:3.25|g1:3.00,g2:r,g3:2.85,g4:2.76|s:25912,26731
+731625|g1:3.06,g2:3.30,g3:2.76"></textarea>
+731625|g1:3.06,g2:3.30,g3:2.76,g4:3.25,g5:2.76"></textarea>
+
+    <button id="uploadResults">📤 Upload Results</button>
+
+    <div class="progress-container" id="progressContainer" style="display: none;">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill">0%</div>
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <div class="terminal" id="terminal"></div>
+
+    <p id="status" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
+
+    <p style="margin-top: 20px; text-align: center; font-size: 12px; color: #7f8c8d;">
+      <a href="dashboard.html" style="color: #7f8c8d; text-decoration: none;">Dashboard</a> |
+      <a href="format.html" style="color: #7f8c8d; text-decoration: none;">Format Converter</a>
+    </p>
+  </div>
+
+  <script type="module">
+    // ✅ FIXED: Import with error handling
+    let uploadResults, getStatistics, getAllResults;
+
+    // Error display function
+    function showError(message) {
+      const errorDisplay = document.getElementById('errorDisplay');
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = message;
+      errorDisplay.style.display = 'block';
+      
+      // Auto-hide after 10 seconds
+      setTimeout(() => {
+        errorDisplay.style.display = 'none';
+      }, 10000);
+    }
+
+    try {
+      const module = await import('./db-config.js');
+      uploadResults = module.uploadResults;
+      getStatistics = module.getStatistics;
+      getAllResults = module.getAllResults;
+      console.log('✅ DB modules loaded successfully');
+    } catch (error) {
+      console.error('❌ Failed to load db-config.js:', error);
+      const errorMsg = 'Failed to load database modules. Please refresh the page. Error: ' + error.message;
+      showError(errorMsg);
+      alert('❌ ' + errorMsg);
+    }
+
+    const adminEmail = localStorage.getItem('adminEmail');
+    if (!adminEmail) {
+      window.location.href = 'admin-login.html';
+    }
+
+    const terminal = document.getElementById('terminal');
+    const statusMsg = document.getElementById('status');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressFill = document.getElementById('progressFill');
+    const stats = document.getElementById('stats');
+    const uploadButton = document.getElementById('uploadResults');
+
+    // Maintenance Mode
+    const maintenanceToggle = document.getElementById('maintenanceToggle');
+    const maintenanceStatus = document.getElementById('maintenanceStatus');
+
+    const savedMaintenanceMode = localStorage.getItem('maintenanceMode') === 'true';
+    maintenanceToggle.checked = savedMaintenanceMode;
+    maintenanceStatus.textContent = savedMaintenanceMode ? 'ON' : 'OFF';
+    maintenanceStatus.style.color = savedMaintenanceMode ? '#e74c3c' : '#27ae60';
+
+    maintenanceToggle.addEventListener('change', function() {
+      const isEnabled = this.checked;
+      localStorage.setItem('maintenanceMode', isEnabled.toString());
+      maintenanceStatus.textContent = isEnabled ? 'ON' : 'OFF';
+      maintenanceStatus.style.color = isEnabled ? '#e74c3c' : '#27ae60';
+
+      if (isEnabled) {
+        log('⚠️ Maintenance mode ENABLED', 'warning');
+        alert('Maintenance mode is now ON.');
+      } else {
+        log('✅ Maintenance mode DISABLED', 'success');
+        alert('Maintenance mode is now OFF.');
+      }
+    });
+
+    // Upload Mode Toggle
+    const uploadModeToggle = document.getElementById('uploadModeToggle');
+    const modeBadge = document.getElementById('modeBadge');
+    const modeDescription = document.getElementById('modeDescription');
+
+    let uploadMode = localStorage.getItem('uploadMode') || 'merge';
+    uploadModeToggle.checked = uploadMode === 'replace';
+    updateModeDisplay();
+
+    function updateModeDisplay() {
+      if (uploadMode === 'merge') {
+        modeBadge.textContent = 'MERGE';
+        modeBadge.className = 'mode-badge merge';
+        modeDescription.innerHTML = `
+          <strong>✅ MERGE Mode Active (Smart Update):</strong><br>
+          • Keeps ALL existing data unchanged<br>
+          • Only updates fields you provide<br>
+          • Intelligent subject handling<br>
+          <br>
+          <strong>📝 Examples:</strong><br>
+          1️⃣ Partial update: Upload <code>888888|g2:2.84</code> → Only g2 updates, g1,g3-g8 stay same<br>
+          2️⃣ Clear referred: Upload <code>888888|g1:2.93|s:</code> → g1 clears, removes all subjects<br>
+          3️⃣ Add referred: Upload <code>888888|g1:r|s:25912,26731</code> → Marks g1 failed, adds subjects<br>
+          4️⃣ Mix update: Upload <code>888888|g1:2.93,g2:r|s:26731</code> → g1 clear, g2 fail, old data kept
+        `;
+      } else {
+        modeBadge.textContent = 'REPLACE';
+        modeBadge.className = 'mode-badge replace';
+        modeDescription.innerHTML = `
+          <strong>⚠️ REPLACE Mode Active (Total Overwrite):</strong><br>
+          • Deletes ALL existing data completely<br>
+          • Replaces with ONLY what you upload<br>
+          • Missing semesters will be REMOVED<br>
+          <br>
+          <strong>📝 Example:</strong><br>
+          Old: <code>888888|g1:2.93,g2:2.84,g3:3.25,g4:3.17,g5:2.90,g6:3.05,g7:3.24,g8:3.17</code><br>
+          Upload: <code>888888|g1:2.93,g2:2.84</code><br>
+          Result: <code>888888|g1:2.93,g2:2.84</code> ← g3-g8 DELETED!<br>
+          <br>
+          ⚠️ Use only for complete record updates!
+        `;
+      }
+    }
+
+    uploadModeToggle.addEventListener('change', function() {
+      uploadMode = this.checked ? 'replace' : 'merge';
+      localStorage.setItem('uploadMode', uploadMode);
+      updateModeDisplay();
+      
+      if (uploadMode === 'replace') {
+        log('⚠️ Upload mode: REPLACE - Will overwrite entire records', 'warning');
+      } else {
+        log('✅ Upload mode: MERGE - Will keep existing data', 'success');
+      }
+    });
+
+    function log(message, type = 'info') {
+      const colors = {
+        info: '#00ff00',
+        success: '#2ecc71',
+        error: '#e74c3c',
+        warning: '#f39c12'
+      };
+
+      const line = document.createElement('div');
+      line.className = 'terminal-line';
+      line.style.color = colors[type] || colors.info;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    // Load Statistics
+    async function loadStatistics() {
+      try {
+        if (!getStatistics) {
+          throw new Error('getStatistics function not loaded. Please refresh the page.');
+        }
+
+        log('Loading statistics...', 'info');
+        const statsData = await getStatistics();
+        
+        document.getElementById('totalStudents').textContent = statsData.total || 0;
+        document.getElementById('passedCount').textContent = statsData.passed || 0;
+        document.getElementById('failedCount').textContent = statsData.failed || 0;
+        document.getElementById('avgCGPA').textContent = statsData.avgCGPA || 'N/A';
+        
+        const passPercent = statsData.total > 0 ? ((statsData.passed / statsData.total) * 100).toFixed(1) : 0;
+        const failPercent = statsData.total > 0 ? ((statsData.failed / statsData.total) * 100).toFixed(1) : 0;
+        
+        document.getElementById('passedPercent').textContent = `${passPercent}% of total`;
+        document.getElementById('failedPercent').textContent = `${failPercent}% of total`;
+        
+        // Top subjects
+        if (statsData.topSubjects && statsData.topSubjects.length > 0) {
+          const topSubjectsSection = document.getElementById('topSubjectsSection');
+          const topSubjectsList = document.getElementById('topSubjectsList');
+          topSubjectsSection.style.display = 'block';
+          
+          topSubjectsList.innerHTML = statsData.topSubjects.slice(0, 10).map(sub => `
+            <div class="subject-item">
+              <span class="subject-code">${sub.code}</span>
+              <span class="subject-count">${sub.count} students</span>
+            </div>
+          `).join('');
+        }
+        
+        log('Statistics loaded successfully', 'success');
+      } catch (error) {
+        console.error('❌ Statistics error:', error);
+        log(`Failed to load statistics: ${error.message}`, 'error');
+        alert('⚠️ Failed to load statistics: ' + error.message);
+      }
+    }
+
+    // Download Backup
+    document.getElementById('downloadBackup').addEventListener('click', async () => {
+      try {
+        if (!getAllResults) {
+          throw new Error('getAllResults function not loaded. Please refresh the page.');
+        }
+
+        log('Creating backup...', 'info');
+        const allResults = await getAllResults();
+        
+        const backup = {
+          timestamp: new Date().toISOString(),
+          totalRecords: allResults.length,
+          data: allResults,
+          version: '1.0',
+          createdBy: adminEmail
+        };
+        
+        const dataStr = JSON.stringify(backup, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `backup-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        
+        saveBackupInfo(backup);
+        
+        log(`Backup created: ${allResults.length} records`, 'success');
+        alert(`✅ Backup created!\n${allResults.length} records downloaded.`);
+      } catch (error) {
+        console.error('❌ Backup error:', error);
+        log(`Backup failed: ${error.message}`, 'error');
+        alert('❌ Backup failed: ' + error.message);
+      }
+    });
+
+    // Restore Backup
+    document.getElementById('restoreFile').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      if (!confirm('⚠️ WARNING: This will REPLACE all existing data!\n\nContinue?')) {
+        e.target.value = '';
+        return;
+      }
+      
+      try {
+        if (!uploadResults) {
+          throw new Error('uploadResults function not loaded. Please refresh the page.');
+        }
+
+        log('Reading backup file...', 'info');
+        const text = await file.text();
+        const backup = JSON.parse(text);
+        
+        if (!backup.data || !Array.isArray(backup.data)) {
+          throw new Error('Invalid backup file format');
+        }
+        
+        log(`Restoring ${backup.totalRecords} records...`, 'warning');
+        
+        const response = await uploadResults(backup.data.map(r => ({ ...r, _uploadMode: 'replace' })));
+        
+        log(`Restore complete: ${response.inserted} inserted, ${response.updated} updated`, 'success');
+        alert(`✅ Restore successful!\n${response.inserted} inserted, ${response.updated} updated`);
+        
+        await loadStatistics();
+      } catch (error) {
+        console.error('❌ Restore error:', error);
+        log(`Restore failed: ${error.message}`, 'error');
+        alert('❌ Restore failed: ' + error.message);
+      } finally {
+        e.target.value = '';
+      }
+    });
+
+    // Auto Backup
+    document.getElementById('createAutoBackup').addEventListener('click', async () => {
+      try {
+        if (!getAllResults) {
+          throw new Error('getAllResults function not loaded. Please refresh the page.');
+        }
+
+        const allResults = await getAllResults();
+        const backup = {
+          timestamp: new Date().toISOString(),
+          totalRecords: allResults.length,
+          data: allResults,
+          type: 'auto'
+        };
+        
+        saveBackupInfo(backup);
+        log(`Auto backup created: ${allResults.length} records`, 'success');
+        alert('✅ Auto backup created!');
+      } catch (error) {
+        console.error('❌ Auto backup error:', error);
+        log(`Auto backup failed: ${error.message}`, 'error');
+        alert('❌ Auto backup failed: ' + error.message);
+      }
+    });
+
+    function saveBackupInfo(backup) {
+      localStorage.setItem('lastBackup', backup.timestamp);
+      updateBackupInfo();
+    }
+
+    function updateBackupInfo() {
+      const lastBackup = localStorage.getItem('lastBackup');
+      if (lastBackup) {
+        const date = new Date(lastBackup);
+        document.getElementById('lastBackupInfo').textContent = 
+          `Last backup: ${date.toLocaleString()}`;
+      }
+    }
+
+    // Refresh Statistics
+    document.getElementById('refreshStats').addEventListener('click', loadStatistics);
+
+    // Logout
+    document.getElementById('logout').addEventListener('click', () => {
+      localStorage.removeItem('adminEmail');
+      window.location.href = 'admin-login.html';
+    });
+
+    // Upload Results
+    document.getElementById('uploadResults').addEventListener('click', async () => {
+      const inputText = document.getElementById('resultInput').value.trim();
+
+      statusMsg.innerText = '';
+      terminal.innerHTML = '';
+
+      if (!inputText) {
+        alert('⚠️ Please paste results!');
+        return;
+      }
+
+      // ✅ CHECK IF MODULE LOADED
+      if (!uploadResults) {
+        alert('❌ Upload function not loaded. Please refresh the page.');
+        log('❌ uploadResults function not available!', 'error');
+        return;
+      }
+
+      log(`Upload mode: ${uploadMode.toUpperCase()}`, uploadMode === 'merge' ? 'success' : 'warning');
+
+      uploadButton.disabled = true;
+      uploadButton.textContent = '⏳ Uploading...';
+      progressContainer.style.display = 'block';
+      progressFill.style.width = '0%';
+      progressFill.innerText = '0%';
+
+      const lines = inputText.split('\n').filter(line => line.trim());
+      const results = [];
+      let validCount = 0;
+      let invalidCount = 0;
+
+      log(`Processing ${lines.length} lines...`, 'info');
+
+      lines.forEach((line, index) => {
+        try {
+          const parsed = parseShortFormat(line);
+          if (parsed) {
+            parsed._uploadMode = uploadMode;
+            results.push(parsed);
+            validCount++;
+          } else {
+            invalidCount++;
+            log(`Invalid format at line ${index + 1}`, 'warning');
+          }
+        } catch (error) {
+          invalidCount++;
+          log(`Error at line ${index + 1}: ${error.message}`, 'error');
+        }
+      });
+
+      log(`Parsed: ${validCount} valid, ${invalidCount} invalid`, validCount > 0 ? 'success' : 'error');
+
+      if (results.length === 0) {
+        statusMsg.innerText = '❌ No valid results found!';
+        statusMsg.style.color = '#e74c3c';
+        uploadButton.disabled = false;
+        uploadButton.textContent = '📤 Upload Results';
+        return;
+      }
+
+      stats.innerText = `Uploading ${results.length} records...`;
+
+      try {
+        const BATCH_SIZE = 1000;
+        let uploaded = 0;
+
+        for (let i = 0; i < results.length; i += BATCH_SIZE) {
+          const batch = results.slice(i, i + BATCH_SIZE);
+          const batchNum = Math.floor(i / BATCH_SIZE) + 1;
+          log(`Uploading batch ${batchNum} (${batch.length} records)...`, 'info');
+
+          const response = await uploadResults(batch);
+          log(`Batch ${batchNum}: ${response.inserted} inserted, ${response.updated} updated`, 'success');
+
+          uploaded += batch.length;
+          const percent = Math.round((uploaded / results.length) * 100);
+          progressFill.style.width = `${percent}%`;
+          progressFill.innerText = `${percent}%`;
+          stats.innerText = `Uploaded ${uploaded} of ${results.length} records`;
+        }
+
+        statusMsg.innerText = `✅ Successfully uploaded ${results.length} results!`;
+        statusMsg.style.color = '#2ecc71';
+        log(`Upload completed! Total: ${results.length} records`, 'success');
+        document.getElementById('resultInput').value = '';
+
+        setTimeout(() => {
+          progressContainer.style.display = 'none';
+        }, 3000);
+
+        await loadStatistics();
+      } catch (error) {
+        console.error('❌ Upload Error:', error);
+        statusMsg.innerText = '❌ Error uploading results!';
+        statusMsg.style.color = '#e74c3c';
+        stats.innerText = error.message;
+        log(`Upload failed: ${error.message}`, 'error');
+        alert('❌ Upload failed: ' + error.message);
+      } finally {
+        uploadButton.disabled = false;
+        uploadButton.textContent = '📤 Upload Results';
+      }
+    });
+
+    function parseShortFormat(line) {
+      line = line.trim();
+      if (!line) return null;
+
+      const parts = line.split('|');
+      if (parts.length < 2) return null;
+
+      const roll = parts[0].trim();
+      if (!/^\d{6}$/.test(roll)) return null;
+
+      const result = { roll };
+
+      for (let i = 1; i < parts.length; i++) {
+        const part = parts[i].trim();
+
+        if (part.startsWith('c:')) {
+          result.c = part.substring(2);
+        } else if (part.startsWith('s:')) {
+          result.s = part.substring(2).split(',').map(s => s.trim()).filter(s => s);
+        } else if (part.match(/^g\d+:/)) {
+          part.split(',').forEach(entry => {
+            const match = entry.match(/^(g\d+):(.+)$/);
+            if (match) {
+              result[match[1]] = match[2];
+            }
+          });
+        }
+      }
+
+      return result;
+    }
+
+    // Load on page load with error handling
+    (async function init() {
+      try {
+        log('🚀 Initializing admin panel...', 'info');
+        
+        // Check if modules are loaded
+        if (!getStatistics || !uploadResults || !getAllResults) {
+          throw new Error('Required modules not loaded. Please refresh the page.');
+        }
+        
+        await loadStatistics();
+        updateBackupInfo();
+        log('✅ Admin panel initialized successfully', 'success');
+      } catch (error) {
+        console.error('❌ Initialization error:', error);
+        log('❌ Initialization failed: ' + error.message, 'error');
+        showError('Failed to initialize: ' + error.message);
+      }
+    })();
+
+    // Auto-refresh every 5 minutes
+    setInterval(() => {
+      if (getStatistics) {
+        loadStatistics();
+      }
+    }, 5 * 60 * 1000);
+  </script>
+</body>
+</html>

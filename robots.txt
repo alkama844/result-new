@@ -1,0 +1,42 @@
+# Robots.txt for BTEB Result Check
+# btebresultcheek.vercel.app
+
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /student1.html
+Allow: /about.html
+Allow: /contact.html
+Allow: /terms.html
+Disallow: /admin.html
+Disallow: /admin-login.html
+Disallow: /format.html
+Disallow: /hidden.html
+Disallow: /test/
+Disallow: /result list/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://btebresultcheek.vercel.app/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
+
+# Allow search engine access
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
